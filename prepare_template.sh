@@ -2,12 +2,14 @@
 
 usage () {
 
-    echo "Usage:
-          When starting the application, provide a port and a base for your
-               shiny applications, and a shiny server will be deployed there.
+    echo "Steps:
+          ----------------------------------------------------------------------
+          1. Use this script to prepare your shiny-server.conf (configuration)
+ 
+               /bin/bash prepare_template.sh
 
-              shiny.simg [start|help]
-              shiny.simg start --port 3737 --base /path/to/apps
+          ----------------------------------------------------------------------
+          2. If needed, you can provide the following arguments
 
           Commands:
              help: show help and exit
@@ -18,6 +20,10 @@ usage () {
            --base: base folder with applications
            --logs: temporary folder with write for logs (not required)
            --disable-index: disable directory indexing
+
+          ----------------------------------------------------------------------
+          3. Make sure Singularity is loaded, and run the container using 
+             the commands shown by the template.
 
          "
 }
@@ -109,7 +115,7 @@ server {
 
 if [ "${SHINY_START}" == "yes" ]; then
 
-    echo "Generating shiny portal...";
+    echo "Generating shiny configuration...";
     echo "port: ${SHINY_PORT}";
     echo "logs:" ${SHINY_LOGS};
     echo "base: ${SHINY_BASE}";
@@ -128,18 +134,17 @@ if [ "${SHINY_START}" == "yes" ]; then
     echo "${CONFIG}" > "shiny-server.conf";
     echo "Server logging will be in ${SHINY_LOGS}";
     echo
-    echo "To run your server:
+    echo  "To run your server:
 
-module load singularity/2.4.6
-singularity run --bind $SHINY_LOGS/logs:/var/log/shiny \
---bind $SHINY_LOGS/lib:/var/lib/shiny-server \
---bind shiny-server.conf:/etc/shiny-server/shiny-server.conf \
-shiny.simg
+    module load singularity/2.4.6
+    singularity run --bind $SHINY_LOGS/logs:/var/log/shiny \\
+    --bind $SHINY_LOGS/lib:/var/lib/shiny-server \\
+    --bind shiny-server.conf:/etc/shiny-server/shiny-server.conf shiny.simg
 
-For custom applications, also add --bind $SHINY_BASE:/srv/shiny-server
-
-To see your applications, open your browser to http://127.0.0.1:$SHINY_PORT or
-open a ssh connection from your computer to your cluster.
+    ---------------------------------------------------------------------------
+    For custom applications, also add --bind $SHINY_BASE:/srv/shiny-server
+    To see your applications, open your browser to http://127.0.0.1:$SHINY_PORT or
+    open a ssh connection from your computer to your cluster.
 "
     exit
 else
