@@ -17,6 +17,7 @@ usage () {
 
           Options:  
            --port:  the port for the application (e.g., shiny default is 3737)
+           --user:  the user for the run_as directive in the shiny configuration
            --base: base folder with applications
            --logs: temporary folder with write for logs (not required)
            --disable-index: disable directory indexing
@@ -43,6 +44,9 @@ SHINY_LOGS=$(mktemp -d /tmp/shiny-server.XXXXXX) && rmdir ${SHINY_LOGS};
 # Disable indexing (on, default, is not disabled)
 DISABLE_DIRINDEX="on";
 
+# User to run_as, defaults to docker
+SHINY_USER="${USER}"
+
 if [ $# -eq 0 ]; then
     usage
     exit
@@ -61,6 +65,11 @@ while true; do
         -p|--port|port)
             shift
             SHINY_PORT="${1:-}"
+            shift
+        ;;
+        -u|--user)
+            shift
+            SHINY_USER="${1:-}"
             shift
         ;;
         -di|--disable-index|disable-index)
@@ -89,7 +98,8 @@ function prepare_conf() {
     SHINY_BASE=$2
     SHINY_LOGS=$3
     DISABLE_DIRINDEX=$4
-    CONFIG="run_as docker;
+    SHINY_USER=$5
+    CONFIG="run_as ${SHINY_USER};
 server {
   listen ${SHINY_PORT};
 
@@ -119,10 +129,11 @@ if [ "${SHINY_START}" == "yes" ]; then
     echo "port: ${SHINY_PORT}";
     echo "logs:" ${SHINY_LOGS};
     echo "base: ${SHINY_BASE}";
+    echo "run_as: ${SHINY_USER}";
 
     # Prepare the template
     
-    CONFIG=$(prepare_conf $SHINY_PORT $SHINY_BASE $SHINY_LOGS $DISABLE_DIRINDEX);
+    CONFIG=$(prepare_conf $SHINY_PORT $SHINY_BASE $SHINY_LOGS $DISABLE_DIRINDEX $SHINY_USER);
     
     # Temporary directory, if doesn't exist
     if [ ! -d "${SHINY_LOGS}" ]; then
