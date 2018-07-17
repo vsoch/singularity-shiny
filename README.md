@@ -36,6 +36,7 @@ Steps:
 
           Options:  
            --port:  the port for the application (e.g., shiny default is 3737)
+           --user:  the user for the run_as directive in the shiny configuration
            --base: base folder with applications
            --logs: temporary folder with write for logs (not required)
            --disable-index: disable directory indexing
@@ -74,7 +75,7 @@ The configuration is generated in your present working directory:
 
 ```
 $ cat shiny-server.conf
-run_as docker;
+run_as vanessa;
 server {
   listen 9098;
 
@@ -147,5 +148,5 @@ the root of the server (at the port) won't be able to explore all of your apps.
 $ /bin/bash prepare_template.sh --disable-index
 ```
 
-You can also customize the port, temporary folder, and base (if somewhere other than
+You can also customize the port, temporary folder, "run_as" user, and base (if somewhere other than
 /srv/shiny-server). Have fun!
