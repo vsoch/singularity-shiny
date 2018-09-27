@@ -33,7 +33,11 @@ usage () {
 SHINY_START="no";
 
 # Port for Flask
-SHINY_PORT=$(tr -cd 0-9 </dev/urandom | head -c 4);
+CHECK_PORT="notnull"
+while [[ ! -z $CHECK_PORT ]]; do
+    SHINY_PORT=$(( ( RANDOM % 60000 )  + 1025 ))
+    CHECK_PORT=$(netstat -atn | grep $SHINY_PORT)
+done
 
 # Base for apps
 SHINY_BASE=/srv/shiny-server;
