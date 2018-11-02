@@ -71,6 +71,11 @@ while true; do
             SHINY_PORT="${1:-}"
             shift
         ;;
+        -b|--base|base)
+            shift
+            SHINY_BASE="${1:-}"
+            shift
+        ;;
         -u|--user)
             shift
             SHINY_USER="${1:-}"
