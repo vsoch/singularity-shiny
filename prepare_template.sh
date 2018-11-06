@@ -144,11 +144,10 @@ if [ "${SHINY_START}" == "yes" ]; then
     
     CONFIG=$(prepare_conf $SHINY_PORT $SHINY_BASE $SHINY_LOGS $DISABLE_DIRINDEX $SHINY_USER);
     
-    # Temporary directory, if doesn't exist
-    if [ ! -d "${SHINY_LOGS}" ]; then
-        mkdir -p ${SHINY_LOGS}/logs;
-        mkdir -p ${SHINY_LOGS}/lib;
-    fi
+    # Temporary directories, if don't exist
+    mkdir -p "${SHINY_LOGS}";
+    mkdir -p ${SHINY_LOGS}/logs;
+    mkdir -p ${SHINY_LOGS}/lib;
 
     # Configuration file
     echo "${CONFIG}" > "shiny-server.conf";
@@ -156,7 +155,7 @@ if [ "${SHINY_START}" == "yes" ]; then
     echo
     echo  "To run your server:
 
-    module load singularity/2.4.6
+    module load singularity
     singularity run --bind $SHINY_LOGS/logs:/var/log/shiny \\
     --bind $SHINY_LOGS/lib:/var/lib/shiny-server \\
     --bind shiny-server.conf:/etc/shiny-server/shiny-server.conf shiny.simg
